@@ -2,51 +2,59 @@
 
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
-  async up(queryInterface, Sequelize) {
-    await queryInterface.createTable('Profiles', {
-      id: {
-        allowNull: false,
-        defaultValue: Sequelize.UUIDV4,
-        primaryKey: true,
-        type: Sequelize.UUID
-      },
-      user_id: {
-        type: Sequelize.UUID,
-        allowNull: true,
-        references: {
-          model: 'Users',
-          key: 'id'
-
+  up:async (queryInterface, Sequelize) => {
+    const transaction = await queryInterface.sequelize.transaction()
+    try {
+      await queryInterface.createTable('Profiles', {
+        id: {
+          allowNull: false,
+          defaultValue: Sequelize.UUIDV4,
+          primaryKey: true,
+          type: Sequelize.UUID
+        },
+        user_id: {
+          type: Sequelize.UUID,
+          allowNull: true,
+        },
+        role_id: {
+          type: Sequelize.INTEGER
+        },
+        country_id: {
+          type: Sequelize.INTEGER
+        },
+        image_url: {
+          type: Sequelize.STRING
+        },
+        code_phone: {
+          type: Sequelize.INTEGER
+        },
+        phone: {
+          type: Sequelize.INTEGER,
+          unique: true
+        },
+        createdAt: {
+          allowNull: false,
+          type: Sequelize.DATE
+        },
+        updatedAt: {
+          allowNull: false,
+          type: Sequelize.DATE
         }
-      },
-      role_id: {
-        type: Sequelize.INTEGER
-        
-      },
-      country_id: {
-        type: Sequelize.INTEGER
-      },
-      image_url: {
-        type: Sequelize.STRING
-      },
-      code_phone: {
-        type: Sequelize.INTEGER
-      },
-      phone: {
-        type: Sequelize.INTEGER,
-        unique: true
-      },
-      createdAt: {
-        allowNull: false,
-        type: Sequelize.DATE
-      },
-      updatedAt: {
-        allowNull: false,
-        type: Sequelize.DATE
-      }
-    })
+      }, {transaction})
+      await transaction.commit()
+    } catch (error) {
+      await transaction.rollback()
+      throw error
+    }
   },
-  async down(queryInterface, Sequelize) {
-    await queryInterface.dropTable('Profiles')
+  down: async (queryInterface, Sequelize) => {
+    const transaction = await queryInterface.sequelize.transaction()
+    try {
+      await queryInterface.dropTable('Profiles', {transaction})
+      await transaction.commit()
+    } catch (error) {
+      await transaction.rollback()
+      throw error
+    }
   }
 }
