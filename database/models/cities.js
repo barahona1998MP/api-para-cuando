@@ -11,14 +11,19 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
+      Cities.belongsTo(models.State, {as: 'state', foreignKey: 'state_id'})
+      Cities.hasMany(models.Publications, {as: 'publications', foreignKey: 'city_id'})
     }
   }
   Cities.init({
-    state_id: DataTypes.INTEGER,
+    state_id: {
+      type: DataTypes.INTEGER
+    },
     name: DataTypes.STRING
   }, {
     sequelize,
     modelName: 'Cities',
+    tableName: 'cities'
   });
   return Cities;
 };

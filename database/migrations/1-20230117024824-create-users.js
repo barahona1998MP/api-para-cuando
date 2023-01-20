@@ -4,18 +4,43 @@ module.exports = {
   up: async (queryInterface, Sequelize) => {
     const transaction = await queryInterface.sequelize.transaction()
     try {
-      await queryInterface.createTable('States', {
+      await queryInterface.createTable('users', {
         id: {
           allowNull: false,
-          autoIncrement: true,
+          defaultValue: Sequelize.UUIDV4,
           primaryKey: true,
-          type: Sequelize.BIGINT
+          type: Sequelize.UUID
         },
-        country_id: {
-          type: Sequelize.INTEGER
-        },
-        name: {
+        first_name: {
           type: Sequelize.STRING
+        },
+        last_name: {
+          type: Sequelize.STRING
+        },
+        email: {
+          type: Sequelize.STRING,
+          unique: true,
+          allowNull: false,
+          validate: {
+            isEmail: true,
+            notEmpty: true
+          }
+        },
+        username: {
+          type: Sequelize.STRING,
+          unique: true,
+          allowNull: false
+        },
+        password: {
+          type: Sequelize.STRING,
+          unique: true,
+          allowNull: false
+        },
+        emai_verified: {
+          type: Sequelize.BOOLEAN
+        },
+        token: {
+          type: Sequelize.STRING,
         },
         createdAt: {
           allowNull: false,
@@ -31,11 +56,12 @@ module.exports = {
       await transaction.rollback()
       throw error
     }
+    
   },
   down: async (queryInterface, Sequelize) => {
     const transaction = await queryInterface.sequelize.transaction()
     try {
-      await queryInterface.dropTable('States', {transaction})
+      await queryInterface.dropTable('users', {transaction})
       await transaction.commit()
     } catch (error) {
       await transaction.rollback()

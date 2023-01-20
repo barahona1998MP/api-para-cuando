@@ -11,6 +11,7 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
+      PublicationsTypes.hasMany(models.Publications, {as: 'publications', foreignKey: 'publication_type_id'})
     }
   }
   PublicationsTypes.init({
@@ -19,6 +20,7 @@ module.exports = (sequelize, DataTypes) => {
   }, {
     sequelize,
     modelName: 'PublicationsTypes',
+    tableName: 'publicationsTypes'
   });
   return PublicationsTypes;
 };

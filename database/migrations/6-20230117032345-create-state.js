@@ -4,17 +4,23 @@ module.exports = {
   up: async (queryInterface, Sequelize) => {
     const transaction = await queryInterface.sequelize.transaction()
     try {
-      await queryInterface.createTable('PublicationsTypes', {
+      await queryInterface.createTable('states', {
         id: {
           allowNull: false,
           autoIncrement: true,
           primaryKey: true,
           type: Sequelize.BIGINT
         },
-        name: {
-          type: Sequelize.STRING
+        country_id: {
+          type: Sequelize.INTEGER,
+          allowNull: true,
+          foreignKey: true,
+          references: {
+            key: 'id',
+            model: 'countries'
+          }
         },
-        description: {
+        name: {
           type: Sequelize.STRING
         },
         createdAt: {
@@ -35,7 +41,7 @@ module.exports = {
   down: async (queryInterface, Sequelize) => {
     const transaction = await queryInterface.sequelize.transaction()
     try {
-      await queryInterface.dropTable('PublicationsTypes', {transaction})
+      await queryInterface.dropTable('states', {transaction})
       await transaction.commit()
     } catch (error) {
       await transaction.rollback()

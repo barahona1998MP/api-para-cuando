@@ -1,46 +1,53 @@
 'use strict'
+
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
-  up: async (queryInterface, Sequelize) => {
+  up:async (queryInterface, Sequelize) => {
     const transaction = await queryInterface.sequelize.transaction()
     try {
-      await queryInterface.createTable('Users', {
+      await queryInterface.createTable('profiles', {
         id: {
           allowNull: false,
           defaultValue: Sequelize.UUIDV4,
           primaryKey: true,
           type: Sequelize.UUID
         },
-        first_name: {
-          type: Sequelize.STRING
-        },
-        last_name: {
-          type: Sequelize.STRING
-        },
-        email: {
-          type: Sequelize.STRING,
-          unique: true,
-          allowNull: false,
-          validate: {
-            isEmail: true,
-            notEmpty: true
+        user_id: {
+          type: Sequelize.UUID,
+          allowNull: true,
+          foreignKey: true,
+          references: {
+            key: 'id',
+            model: 'users'
           }
         },
-        username: {
-          type: Sequelize.STRING,
-          unique: true,
-          allowNull: false
+        role_id: {
+          type: Sequelize.INTEGER,
+          allowNull: false,
+          foreignKey: true,
+          references: {
+            key: 'id',
+            model: 'roles'
+          }
         },
-        password: {
-          type: Sequelize.STRING,
-          unique: true,
-          allowNull: false
+        country_id: {
+          type: Sequelize.INTEGER,
+          allowNull: false,
+          foreignKey: true,
+          references: {
+            key: 'id',
+            model: 'countries'
+          }
         },
-        emai_verified: {
-          type: Sequelize.BOOLEAN
+        image_url: {
+          type: Sequelize.STRING
         },
-        token: {
-          type: Sequelize.STRING,
+        code_phone: {
+          type: Sequelize.INTEGER
+        },
+        phone: {
+          type: Sequelize.INTEGER,
+          unique: true
         },
         createdAt: {
           allowNull: false,
@@ -56,12 +63,11 @@ module.exports = {
       await transaction.rollback()
       throw error
     }
-    
   },
   down: async (queryInterface, Sequelize) => {
     const transaction = await queryInterface.sequelize.transaction()
     try {
-      await queryInterface.dropTable('Users', {transaction})
+      await queryInterface.dropTable('profiles', {transaction})
       await transaction.commit()
     } catch (error) {
       await transaction.rollback()

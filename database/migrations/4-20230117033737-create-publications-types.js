@@ -1,36 +1,22 @@
 'use strict'
-
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
-  up:async (queryInterface, Sequelize) => {
+  up: async (queryInterface, Sequelize) => {
     const transaction = await queryInterface.sequelize.transaction()
     try {
-      await queryInterface.createTable('Profiles', {
+      await queryInterface.createTable('publicationsTypes', {
         id: {
           allowNull: false,
-          defaultValue: Sequelize.UUIDV4,
+          autoIncrement: true,
           primaryKey: true,
-          type: Sequelize.UUID
+          type: Sequelize.BIGINT
         },
-        user_id: {
-          type: Sequelize.UUID,
-          allowNull: true,
+        name: {
+          type: Sequelize.STRING,
+          
         },
-        role_id: {
-          type: Sequelize.INTEGER
-        },
-        country_id: {
-          type: Sequelize.INTEGER
-        },
-        image_url: {
+        description: {
           type: Sequelize.STRING
-        },
-        code_phone: {
-          type: Sequelize.INTEGER
-        },
-        phone: {
-          type: Sequelize.INTEGER,
-          unique: true
         },
         createdAt: {
           allowNull: false,
@@ -50,7 +36,7 @@ module.exports = {
   down: async (queryInterface, Sequelize) => {
     const transaction = await queryInterface.sequelize.transaction()
     try {
-      await queryInterface.dropTable('Profiles', {transaction})
+      await queryInterface.dropTable('publicationsTypes', {transaction})
       await transaction.commit()
     } catch (error) {
       await transaction.rollback()
